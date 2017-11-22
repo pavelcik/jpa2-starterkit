@@ -1,7 +1,11 @@
 package com.capgemini.jpa2project;
 
+import static org.junit.Assert.assertEquals;
+
 import java.sql.Date;
 import java.time.LocalDate;
+
+import javax.transaction.Transactional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,8 +15,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.capgemini.jpa2project.domain.ClientEntity;
-import com.capgemini.jpa2project.service.impl.ClientEntityService;
-
+import com.capgemini.jpa2project.service.ClientEntityService;
+@Transactional
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @TestPropertySource(properties = { "spring.profiles.active=mysql", "spring.datasource.username=root",
@@ -23,6 +27,7 @@ public class CarServiceTest {
 
 	@Test
 	public void shouldSaveClient() {
+		//given
 		ClientEntity entity = new ClientEntity();
 		entity.setAddress("Nowa 12 Wrocław");
 		LocalDate date = LocalDate.of(1979, 10, 23);
@@ -31,7 +36,12 @@ public class CarServiceTest {
 		entity.setName("Marek");
 		entity.setSurname("Kowalski");
 		entity.setPhone("512314790");
+		//when
 		service.save(entity);
+		//then
+		assertEquals(21,service.findAll().size());
+		
+		
 		
 	}
 

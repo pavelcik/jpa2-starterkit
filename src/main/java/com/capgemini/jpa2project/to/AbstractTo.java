@@ -1,15 +1,12 @@
-package com.capgemini.jpa2project.domain;
-
+package com.capgemini.jpa2project.to;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
-@MappedSuperclass
-public abstract class AbstractEntity {
+public abstract class AbstractTo {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -18,6 +15,8 @@ public abstract class AbstractEntity {
 	@Version
 	@Column(columnDefinition = "integer DEFAULT 0", nullable = false)
 	private long Version = 0L;
+	
+	
 
 	public Long getId() {
 		return id;
@@ -36,5 +35,4 @@ public abstract class AbstractEntity {
 	}
 	
 	
-
 }

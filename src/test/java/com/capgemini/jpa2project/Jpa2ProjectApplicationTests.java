@@ -11,7 +11,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.capgemini.jpa2project.domain.ClientEntity;
-import com.capgemini.jpa2project.service.impl.ClientEntityService;
+import com.capgemini.jpa2project.service.ClientEntityService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
