@@ -29,13 +29,17 @@ public class ProductEntityServiceImpl implements ProductEntityService {
 			throw new BusinessException(ExceptionMessages.OBJECT_NOT_FOUND);
 		} else return entity;
 	}
+	
 	@Override
 	public void createOne(ProductTo productTo) {
 		dao.createOne(productTo);
 	}
 	
 	@Override
-	public void updateOne(ProductTo productTo) {
+	public void updateOne(ProductTo productTo) throws BusinessException {
+		if((productTo.getId()>findAll().get(findAll().size()-1).getId()||productTo.getId()<=0)) {
+			throw new BusinessException(ExceptionMessages.ID_NOT_VALID); 
+		} else
 		dao.updateOne(productTo);
 	}
 	

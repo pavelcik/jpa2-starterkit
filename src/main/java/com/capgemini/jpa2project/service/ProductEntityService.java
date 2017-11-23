@@ -12,7 +12,7 @@ public interface ProductEntityService {
 	
 	public void createOne(ProductTo productTo);
 	
-	public void updateOne(ProductTo productTo);
+	public void updateOne(ProductTo productTo) throws BusinessException;
 	
 	public void deleteOne(ProductTo productTo);
 	

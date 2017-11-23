@@ -8,7 +8,12 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @MappedSuperclass
+@Getter
+@Setter
 public abstract class AbstractEntity {
 
 	@Id
@@ -19,22 +24,6 @@ public abstract class AbstractEntity {
 	@Column(columnDefinition = "integer DEFAULT 0", nullable = false)
 	private long Version = 0L;
 
-	public Long getId() {
-		return id;
-	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public long getVersion() {
-		return Version;
-	}
-
-	public void setVersion(long version) {
-		Version = version;
-	}
-	
-	
 
 }

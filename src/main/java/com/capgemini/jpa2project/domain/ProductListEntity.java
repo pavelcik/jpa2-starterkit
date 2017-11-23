@@ -4,7 +4,12 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Entity
+@Getter
+@Setter
 @Table(name="product_list")
 public class ProductListEntity extends AbstractEntity {
 
@@ -12,21 +17,9 @@ public class ProductListEntity extends AbstractEntity {
 	
 	@ManyToOne
 	private TransactionEntity transaction;
-	
-	public int getNumberOfItems() {
-		return numberOfItems;
-	}
-	public void setNumberOfItems(int numberOfItems) {
-		this.numberOfItems = numberOfItems;
-	}
-	public TransactionEntity getTransaction() {
-		return transaction;
-	}
-	public void setTransaction(TransactionEntity transaction) {
-		this.transaction = transaction;
-	}
+	@ManyToOne
+	private ProductEntity product;
 
-	
 	
 	
 }

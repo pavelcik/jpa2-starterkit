@@ -5,31 +5,35 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
+import com.capgemini.jpa2project.domain.ProductEntity;
 import com.capgemini.jpa2project.domain.ProductListEntity;
 import com.capgemini.jpa2project.to.ProductListTo;
 @Component
 public class ProductListMapper {
 	
 	public ProductListTo map(ProductListEntity productListEntity) {
-		ProductListTo product = null;
+		ProductListTo productTo = null;
 				
 				
 		if (productListEntity != null) {
-			product = new ProductListTo.Builder().numberOfItems(productListEntity.getNumberOfItems())
-					.transaction(productListEntity.getTransaction()).build();
+			productTo = ProductListTo.builder().numberOfItems(productListEntity.getNumberOfItems()).product(productListEntity.getProduct())
+					.transaction(productListEntity.getTransaction()).
+					id(productListEntity.getId()).Version(productListEntity.getVersion()).build();
 		}
-		return product;
+		return productTo;
 	}
 	
-	public ProductListEntity map(ProductListTo productListTo) {
-		
-		ProductListEntity productListEntity = new ProductListEntity();
+	public ProductListEntity map(ProductListEntity productListEntity, ProductListTo productListTo) {
 		
 		if (productListEntity != null) {
-			productListEntity.setId(productListTo.getId());
 			productListEntity.setNumberOfItems(productListTo.getNumberOfItems());
-			productListEntity.setTransaction(productListEntity.getTransaction());
-			productListEntity.setVersion(productListEntity.getVersion());
+			return productListEntity;
+		} else {
+			ProductListEntity productListEntity2 = new ProductListEntity();
+			productListEntity2.setNumberOfItems(productListTo.getNumberOfItems());
+			productListEntity2.setVersion(productListTo.getVersion());
+			productListEntity2.setProduct(productListTo.getProduct());
+			productListEntity2.setTransaction(productListTo.getTransaction());
 		}
 		return productListEntity;
 	}

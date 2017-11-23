@@ -3,6 +3,7 @@ package com.capgemini.jpa2project;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -14,8 +15,9 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.capgemini.jpa2project.domain.ProductEntity;
+import com.capgemini.jpa2project.domain.ProductListEntity;
 import com.capgemini.jpa2project.exceptions.BusinessException;
-import com.capgemini.jpa2project.exceptions.ExceptionMessages;
+import com.capgemini.jpa2project.mapper.ProductMapper;
 import com.capgemini.jpa2project.service.ProductEntityService;
 import com.capgemini.jpa2project.to.ProductTo;
 
@@ -28,9 +30,11 @@ public class ProductServiceTest {
 	
 	@Autowired
 	private ProductEntityService service;
+	@Autowired
+	private ProductMapper mapper;
 	
 	@Test
-	public void shouldFindObject() throws BusinessException {
+	public void shouldFindProduct() throws BusinessException {
 		//given
 		Long id = 20L;
 		//when
@@ -51,12 +55,26 @@ public class ProductServiceTest {
 	@Test
 	public void shouldCreateObject() throws BusinessException {
 		//given
-		ProductTo product = new ProductTo.Builder().id(51L).margin(new BigDecimal("8.25")).productName("Soap - Dove").unitPrice(2.24f).build();
+		ProductTo product = ProductTo.builder().id(51L).margin(new BigDecimal("8.25")).productName("Soap - Dove").unitPrice(new BigDecimal("2.24")).build();
 		int size = service.findAll().size();
 		//when
 		service.createOne(product);
 		//then
 		assertEquals(size+1,service.findAll().size());
+	}
+	
+	@Test
+	public void checkOrderedProductsList() throws BusinessException {
+		//given
+		Long id = 10L;
+		Long listId = 20L;
+		ProductTo product = ProductTo.builder().build();
+		product.setId(id);
+		ProductEntity productEntity = mapper.map(product);
+		//when
+		List<ProductListEntity> orderedProducts = productEntity.getOrderedProducts();
+		assertEquals(listId,orderedProducts.get(0).getId());
+		assertEquals(3,orderedProducts.size());
 		
 	}
 	

@@ -1,51 +1,29 @@
 package com.capgemini.jpa2project.to;
 
-import javax.persistence.ManyToOne;
-
+import com.capgemini.jpa2project.domain.ProductEntity;
 import com.capgemini.jpa2project.domain.TransactionEntity;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+@Getter
+@Setter
 public class ProductListTo extends AbstractTo{
 
 	private int numberOfItems;
 	private TransactionEntity transaction;
-
-	public int getNumberOfItems() {
-		return numberOfItems;
-	}
-
-	public void setNumberOfItems(int numberOfItems) {
+	private ProductEntity product;
+	@Builder
+	public ProductListTo(Long id, long Version, int numberOfItems, TransactionEntity transaction,
+			ProductEntity product) {
+		super(id, Version);
 		this.numberOfItems = numberOfItems;
-	}
-
-	public TransactionEntity getTransaction() {
-		return transaction;
-	}
-
-	public void setTransaction(TransactionEntity transaction) {
 		this.transaction = transaction;
+		this.product = product;
 	}
 
-	public static class Builder {
-		private int numberOfItems;
-		private TransactionEntity transaction;
+	
 
-		public Builder numberOfItems(int numberOfItems) {
-			this.numberOfItems = numberOfItems;
-			return this;
-		}
 
-		public Builder transaction(TransactionEntity transaction) {
-			this.transaction = transaction;
-			return this;
-		}
 
-		public ProductListTo build() {
-			return new ProductListTo(this);
-		}
-	}
-
-	private ProductListTo(Builder builder) {
-		this.numberOfItems = builder.numberOfItems;
-		this.transaction = builder.transaction;
-	}
 }
