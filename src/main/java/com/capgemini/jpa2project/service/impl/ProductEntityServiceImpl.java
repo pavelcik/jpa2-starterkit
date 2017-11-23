@@ -31,21 +31,27 @@ public class ProductEntityServiceImpl implements ProductEntityService {
 	}
 	
 	@Override
-	public void createOne(ProductTo productTo) {
-		dao.createOne(productTo);
+	public void createOne(ProductEntity entity,ProductTo productTo) throws BusinessException {
+		if(productTo.getId()!=null) {
+			throw new BusinessException(ExceptionMessages.ID_SET_MANUALLY);
+		}
+		else 
+		dao.createOne(entity,productTo);
 	}
 	
 	@Override
-	public void updateOne(ProductTo productTo) throws BusinessException {
-		if((productTo.getId()>findAll().get(findAll().size()-1).getId()||productTo.getId()<=0)) {
+	public void updateOne(ProductEntity entity,ProductTo productTo) throws BusinessException {
+		if(entity.getId()>findAll().size()) {
 			throw new BusinessException(ExceptionMessages.ID_NOT_VALID); 
 		} else
-		dao.updateOne(productTo);
+		dao.updateOne(entity,productTo);
 	}
 	
 	@Override
-	public void deleteOne(ProductTo productTo) {
-		dao.deleteOne(productTo);
+	public void deleteOne(ProductTo productTo) throws BusinessException {
+		if(productTo.getId()>findAll().size()) {
+			throw new BusinessException(ExceptionMessages.ID_NOT_VALID);
+		} else dao.deleteOne(productTo);
 	}
 	@Override
 	public List<ProductEntity> findAll() {

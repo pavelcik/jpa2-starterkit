@@ -3,6 +3,7 @@ package com.capgemini.jpa2project;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -13,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.capgemini.jpa2project.domain.ProductEntity;
 import com.capgemini.jpa2project.service.JPaQueryService;
 
 @Transactional
@@ -47,5 +49,21 @@ public class JpaQueryTest {
 		assertEquals(result,calculationResult);
 	}
 	
+	@Test
+	public void shouldFindUniqueListOfProductsByClient() {
+		Long id = 1L;
+		
+		
+		//when
+		List<String> productList = service.uniqueShoppingListByClient(id);
+		
+		assertEquals("Lamb - Bones",productList.get(0));
+		assertEquals("Pastry - Apple Large",productList.get(1));
+	}
+	
+	@Test
+	public void shouldFindTop10() {
+		List<ProductEntity> top10 = service.tenBestsellingProducts();
+	}
 	
 }

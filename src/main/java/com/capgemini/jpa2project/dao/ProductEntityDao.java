@@ -9,9 +9,9 @@ public interface ProductEntityDao {
 
 	ProductEntity findOne(Long id);
 
-	void createOne(ProductTo productTo);
+	void createOne(ProductEntity entity,ProductTo productTo);
 
-	void updateOne(ProductTo productTo);
+	void updateOne(ProductEntity entity,ProductTo productTo);
 	
 	public void deleteOne(ProductTo productTo);
 

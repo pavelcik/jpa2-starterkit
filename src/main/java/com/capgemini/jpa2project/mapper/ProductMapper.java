@@ -27,19 +27,24 @@ public class ProductMapper {
 		return productTo;
 	}
 
-	public ProductEntity map(ProductTo productTo) {
-
-		ProductEntity productEntity = new ProductEntity();
-
+	public ProductEntity map(ProductEntity productEntity,ProductTo productTo) {
+		
+		
+		
 		if (productEntity != null) {
-			productEntity.setId(productTo.getId());
 			productEntity.setMargin(productTo.getMargin());
 			productEntity.setProductName(productTo.getProductName());
 			productEntity.setUnitPrice(productTo.getUnitPrice());
-			productEntity.setVersion(productTo.getVersion());
-			productEntity.setOrderedProducts(dao.findAllForProductId(productTo.getId()));
+			return productEntity;
+		} else {
+			ProductEntity productEntity2 = new ProductEntity();
+			productEntity2.setMargin(productTo.getMargin());
+			productEntity2.setOrderedProducts(productTo.getOrderedProducts());
+			productEntity2.setProductName(productTo.getProductName());
+			productEntity2.setUnitPrice(productTo.getUnitPrice());
+			return productEntity2;
 		}
-		return productEntity;
+		
 	}
 
 	public List<ProductTo> map2To(List<ProductEntity> productEntities) {

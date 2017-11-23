@@ -10,11 +10,11 @@ public interface ProductEntityService {
 	
 	public ProductEntity findOne(Long id) throws BusinessException;
 	
-	public void createOne(ProductTo productTo);
+	public void createOne(ProductEntity entity,ProductTo productTo) throws BusinessException;
 	
-	public void updateOne(ProductTo productTo) throws BusinessException;
+	public void updateOne(ProductEntity entity,ProductTo productTo) throws BusinessException;
 	
-	public void deleteOne(ProductTo productTo);
+	public void deleteOne(ProductTo productTo) throws BusinessException;
 	
 	public List<ProductEntity> findAll();
 	

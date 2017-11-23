@@ -1,13 +1,15 @@
 package com.capgemini.jpa2project;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,8 +17,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.capgemini.jpa2project.domain.ProductEntity;
-import com.capgemini.jpa2project.domain.ProductListEntity;
 import com.capgemini.jpa2project.exceptions.BusinessException;
+import com.capgemini.jpa2project.exceptions.ExceptionMessages;
 import com.capgemini.jpa2project.mapper.ProductMapper;
 import com.capgemini.jpa2project.service.ProductEntityService;
 import com.capgemini.jpa2project.to.ProductTo;
@@ -40,43 +42,159 @@ public class ProductServiceTest {
 		//when
 		ProductEntity entity = service.findOne(id);
 		//then
-		assertEquals("Lamb - Bones",entity.getProductName());
-		
+		assertEquals("Lamb - Bones",entity.getProductName());	
 	}
 	
-	@Test(expected=BusinessException.class)
-	public void shouldNotFindObject() throws BusinessException {
-		//given
+	@Rule
+	public ExpectedException expectedEx = ExpectedException.none();
+
+	
+	@Test
+	public void shouldFindAllProductLists() {
+		// given
+		int size = 50;
+		// when
+		int listSize = service.findAll().size();
+		// then
+		assertEquals(size, listSize);
+
+	}
+
+	@Test
+	public void shouldNotFindTheProductListSize() {
+		// given
+		int size = 100;
+		// when
+		int listSize = service.findAll().size();
+		// then
+		assertNotEquals(size, listSize);
+
+	}
+
+	@Test
+	public void shouldFindOneProduct() throws BusinessException {
+		// given
+		Long id = 7L;
+		// when
+		ProductEntity product = service.findOne(id);
+		// then
+		assertEquals(id, product.getId());
+
+	}
+
+	@Test
+	public void shouldNotFindOneProduct() throws BusinessException {
+		// given
+		Long id = 2777L;
+		// when
+		expectedEx.expect(BusinessException.class);
+		expectedEx.expectMessage(ExceptionMessages.OBJECT_NOT_FOUND);
+		service.findOne(id);
+	}
+
+	@Test
+	public void shouldCreateNewProductListAndAddItToDatabase() throws BusinessException {
+		// given
 		Long id = 51L;
-		//when
-		ProductEntity entity = service.findOne(id);
+		ProductEntity entity = new ProductEntity();
+		ProductTo productTo = ProductTo.builder().margin(new BigDecimal("8.78")).productName("Nutella").unitPrice(new BigDecimal("10.24"))
+				.build();
+		int productListSize = service.findAll().size();
+		// when
+		service.createOne(entity, productTo);
+		int productListSizeWithNewProduct = service.findAll().size();
+		// then
+		assertEquals(productListSize+1, productListSizeWithNewProduct);
+		assertEquals(id, entity.getId());
+	}
+
+	@Test
+	public void shouldNotCreateNewProductListAndAddItToDatabase() throws BusinessException {
+		// given
+		ProductTo productTo = ProductTo.builder().margin(new BigDecimal("8.78")).productName("Nutella").id(51L).unitPrice(new BigDecimal("10.24"))
+				.build();
+		// when
+		ProductEntity entity = new ProductEntity();
+		expectedEx.expect(BusinessException.class);
+		expectedEx.expectMessage(ExceptionMessages.ID_SET_MANUALLY);
+		// then
+		service.createOne(entity, productTo);
 	}
 	
 	@Test
-	public void shouldCreateObject() throws BusinessException {
-		//given
-		ProductTo product = ProductTo.builder().id(51L).margin(new BigDecimal("8.25")).productName("Soap - Dove").unitPrice(new BigDecimal("2.24")).build();
-		int size = service.findAll().size();
-		//when
-		service.createOne(product);
-		//then
-		assertEquals(size+1,service.findAll().size());
+	public void shouldUpdateProductList() throws BusinessException {
+		// given
+		Long entityId = 16L;
+		ProductEntity entity = service.findOne(entityId);
+		ProductTo newEntity =  ProductTo.builder().margin(new BigDecimal("8.78")).productName("Nutella").unitPrice(new BigDecimal("10.24"))
+				.build();
+		// when
+		service.updateOne(entity, newEntity);
+		// then
+		assertEquals(entityId, entity.getId());
+		assertEquals(entity.getMargin(), newEntity.getMargin());
 	}
 	
 	@Test
-	public void checkOrderedProductsList() throws BusinessException {
-		//given
-		Long id = 10L;
-		Long listId = 20L;
-		ProductTo product = ProductTo.builder().build();
-		product.setId(id);
-		ProductEntity productEntity = mapper.map(product);
-		//when
-		List<ProductListEntity> orderedProducts = productEntity.getOrderedProducts();
-		assertEquals(listId,orderedProducts.get(0).getId());
-		assertEquals(3,orderedProducts.size());
+	public void shouldCheckIfUpdateUpdatesProductListAndNotAddsNew() throws BusinessException {
+		// given
 		
+		Long entityId = 16L;
+		ProductEntity entity = service.findOne(entityId);
+		ProductTo newEntity =  ProductTo.builder().margin(new BigDecimal("8.78")).productName("Nutella").unitPrice(new BigDecimal("10.24"))
+				.build();
+		// when
+		service.updateOne(entity, newEntity);
+		
+		int productListSize = service.findAll().size();
+		// then
+		assertEquals(50, productListSize);
 	}
+
+	@Test
+	public void shouldNotUpdateProductList() throws BusinessException {
+		// given
+		Long entityId = 51L;
+		expectedEx.expect(BusinessException.class);
+		expectedEx.expectMessage(ExceptionMessages.OBJECT_NOT_FOUND);
+		ProductEntity entity = service.findOne(entityId);
+		ProductTo newEntity =  ProductTo.builder().margin(new BigDecimal("8.78")).productName("Nutella").unitPrice(new BigDecimal("10.24"))
+				.build();
+		// when
+		
+		service.updateOne(entity, newEntity);
+		
+
+	}
+	
+	@Test
+	public void shouldDeleteProduct() throws BusinessException {
+		// given
+		
+		ProductTo to = ProductTo.builder().id(20L).build();
+		int productListSize = service.findAll().size();
+		// when
+		service.deleteOne(to);
+		int newProductListSize = service.findAll().size();
+		// then
+		assertEquals(productListSize-1, newProductListSize);
+	}
+	
+	@Test
+	public void shouldNotDeleteProductList() throws BusinessException {
+		// given
+		ProductTo to = ProductTo.builder().id(51L).build();
+		int productListSize = service.findAll().size();
+		// when
+		expectedEx.expect(BusinessException.class);
+		expectedEx.expectMessage(ExceptionMessages.ID_NOT_VALID);
+		service.deleteOne(to);
+	
+		int newProductListSize = service.findAll().size();
+		// then
+		assertEquals(productListSize-1, newProductListSize);
+	}
+	
 	
 	
 	

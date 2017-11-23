@@ -27,8 +27,8 @@ public class ProductDaoImpl implements ProductEntityDao {
 	@Autowired
 	private ProductListMapper productListMapper;
 	
-	public ProductEntity toEntity(ProductTo productTo) {
-		return mapper.map(productTo);
+	public ProductEntity toEntity(ProductEntity productEntity,ProductTo productTo) {
+		return mapper.map(productEntity,productTo);
 	}
 	
 	public ProductTo toTo(ProductEntity entity) {
@@ -48,21 +48,24 @@ public class ProductDaoImpl implements ProductEntityDao {
 		return em.find(ProductEntity.class, id);
 	}
 	@Override
-	public void createOne(ProductTo productTo) {
-		ProductEntity entity = toEntity(productTo);
-		em.persist(entity);
+	public void createOne(ProductEntity entity,ProductTo productTo) {
+		ProductEntity productEntity = toEntity(entity,productTo);
+		em.persist(productEntity);
+		em.flush();
 	}
 	
+	
 	@Override
-	public void updateOne(ProductTo productTo) {
-		ProductEntity entity = mapper.map(productTo); 
-		entity = findOne(entity.getId());
-		em.merge(entity);
+	public void updateOne(ProductEntity entity,ProductTo productTo) {
+		ProductEntity productEntity = toEntity(entity,productTo);
+		em.merge(productEntity);
 	}
+	
 	
 	@Override
 	public void deleteOne(ProductTo productTo) {
-		em.remove(productTo);
+		ProductEntity productEntity= em.find(ProductEntity.class, productTo.getId());
+		em.remove(productEntity);
 	}
 
 }
