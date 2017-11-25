@@ -8,6 +8,7 @@ import com.capgemini.jpa2project.domain.ProductListEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+
 @Getter
 @Setter
 public class ProductTo extends AbstractTo {
@@ -16,7 +17,7 @@ public class ProductTo extends AbstractTo {
 	private String productName;
 	private BigDecimal margin;
 	private List<ProductListEntity> orderedProducts;
-	
+
 	@Builder
 	public ProductTo(Long id, long Version, BigDecimal unitPrice, String productName, BigDecimal margin,
 			List<ProductListEntity> orderedProducts) {
@@ -26,7 +27,5 @@ public class ProductTo extends AbstractTo {
 		this.margin = margin;
 		this.orderedProducts = orderedProducts;
 	}
-	
-	
 
 }

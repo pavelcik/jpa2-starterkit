@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import com.capgemini.jpa2project.dao.ProductListDao;
 import com.capgemini.jpa2project.domain.ProductEntity;
-import com.capgemini.jpa2project.domain.QProductListEntity;
 import com.capgemini.jpa2project.to.ProductTo;
 
 @Component
@@ -22,19 +21,19 @@ public class ProductMapper {
 
 		if (productEntity != null) {
 			productTo = ProductTo.builder().id(productEntity.getId()).margin(productEntity.getMargin())
-					.productName(productEntity.getProductName()).Version(productEntity.getVersion()).unitPrice(productEntity.getUnitPrice()).build();
+					.productName(productEntity.getProductName()).Version(productEntity.getVersion())
+					.unitPrice(productEntity.getUnitPrice()).build();
 		}
 		return productTo;
 	}
 
-	public ProductEntity map(ProductEntity productEntity,ProductTo productTo) {
-		
-		
-		
-		if (productEntity != null) {
+	public ProductEntity map(ProductEntity productEntity, ProductTo productTo) {
+
+		if (productEntity != null && productEntity.getId() != null) {
 			productEntity.setMargin(productTo.getMargin());
 			productEntity.setProductName(productTo.getProductName());
 			productEntity.setUnitPrice(productTo.getUnitPrice());
+			productEntity.setOrderedProducts(dao.findAllForProductId(productEntity.getId()));
 			return productEntity;
 		} else {
 			ProductEntity productEntity2 = new ProductEntity();
@@ -44,7 +43,7 @@ public class ProductMapper {
 			productEntity2.setUnitPrice(productTo.getUnitPrice());
 			return productEntity2;
 		}
-		
+
 	}
 
 	public List<ProductTo> map2To(List<ProductEntity> productEntities) {

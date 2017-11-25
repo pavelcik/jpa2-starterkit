@@ -17,4 +17,5 @@ public interface ClientEntityDao  {
 	public void deleteOne(ProductTo productTo);
 	
 	List<ClientEntity> findAll();
+	public ClientEntity findAllForTransactionId(Long id);
 }

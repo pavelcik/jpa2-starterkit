@@ -19,7 +19,7 @@ public class TransactionTo extends AbstractTo {
 	private Date orderDate;
 	private ClientEntity client;
 	private List<ProductListEntity> productList;
-	
+
 	@Builder
 	public TransactionTo(Long id, long Version, OrderStatus status, Date orderDate, ClientEntity client,
 			List<ProductListEntity> productList) {
@@ -29,8 +29,5 @@ public class TransactionTo extends AbstractTo {
 		this.client = client;
 		this.productList = productList;
 	}
-	
-	
-	
-	
+
 }

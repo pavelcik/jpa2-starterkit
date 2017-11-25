@@ -8,6 +8,7 @@ import com.capgemini.jpa2project.domain.TransactionEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+
 @Getter
 @Setter
 public class ClientTo extends AbstractTo {
@@ -18,7 +19,7 @@ public class ClientTo extends AbstractTo {
 	private String address;
 	private Date dateOfBirth;
 	private List<TransactionEntity> clientOrders;
-	
+
 	@Builder
 	public ClientTo(Long id, long Version, String name, String surname, String email, String phone, String address,
 			Date dateOfBirth, List<TransactionEntity> clientOrders) {
@@ -31,6 +32,5 @@ public class ClientTo extends AbstractTo {
 		this.dateOfBirth = dateOfBirth;
 		this.clientOrders = clientOrders;
 	}
-	
-	
+
 }

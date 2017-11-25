@@ -51,9 +51,10 @@ public class TransactionServiceTest {
 		// when
 		TransactionEntity mappedEntity = mapper.map(entity, transactionTo);
 		assertEquals(mappedEntity.getId(), entity.getId());
+		assertEquals(mappedEntity.getClient(), entity.getClient());
 		assertEquals(mappedEntity.getOrderDate(), transactionTo.getOrderDate());
 		assertEquals(mappedEntity.getStatus(), transactionTo.getStatus());
-
+		assertEquals(mappedEntity.getProductList(), entity.getProductList());
 	}
 
 	@Test
@@ -128,7 +129,7 @@ public class TransactionServiceTest {
 		int productListSize = service.findAll().size();
 		// then
 		assertEquals(101, productListSize);
-		assertEquals(id, entity.getId());
+		assertEquals(id, service.findAll().get(productListSize - 1).getId());
 	}
 
 	@Test

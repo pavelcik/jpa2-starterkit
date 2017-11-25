@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.capgemini.jpa2project.dao.ClientEntityDao;
 import com.capgemini.jpa2project.domain.ClientEntity;
 import com.capgemini.jpa2project.domain.QClientEntity;
+import com.capgemini.jpa2project.domain.QTransactionEntity;
 import com.capgemini.jpa2project.to.ProductTo;
 import com.querydsl.jpa.impl.JPAQuery;
 
@@ -44,6 +45,15 @@ public class ClientEntityDaoImpl implements ClientEntityDao {
 		QClientEntity clientEntity = QClientEntity.clientEntity;
 		JPAQuery<ClientEntity> query = new JPAQuery<>(em);
 		List<ClientEntity> result = query.select(clientEntity).from(clientEntity).fetch();
+		return result;
+	}
+
+	@Override
+	public ClientEntity findAllForTransactionId(Long id) {
+		QTransactionEntity transaction = QTransactionEntity.transactionEntity;
+		JPAQuery<ClientEntity> query = new JPAQuery<>(em);
+		ClientEntity result = query.select(transaction.client).from(transaction).where(transaction.id.eq(id))
+				.fetchFirst();
 		return result;
 	}
 

@@ -14,18 +14,19 @@ import com.capgemini.jpa2project.domain.TransactionEntity;
 import com.capgemini.jpa2project.mapper.TransactionMapper;
 import com.capgemini.jpa2project.to.TransactionTo;
 import com.querydsl.jpa.impl.JPAQuery;
+
 @Repository
 public class TransactionDaoImpl implements TransactionDao {
-	
+
 	@PersistenceContext
 	private EntityManager em;
 	@Autowired
 	private TransactionMapper mapper;
-	
+
 	public TransactionEntity toEntity(TransactionEntity entity, TransactionTo to) {
 		return mapper.map(entity, to);
 	}
-	
+
 	@Override
 	public List<TransactionEntity> findAll() {
 		QTransactionEntity transaction = QTransactionEntity.transactionEntity;
@@ -34,29 +35,26 @@ public class TransactionDaoImpl implements TransactionDao {
 		return result;
 	}
 
-	
 	@Override
 	public TransactionEntity findOne(Long id) {
 		return em.find(TransactionEntity.class, id);
 	}
-	
+
 	@Override
-	public void createOne(TransactionEntity entity,TransactionTo transactionTo) {
-		TransactionEntity newEntity = toEntity(entity,transactionTo);
+	public void createOne(TransactionEntity entity, TransactionTo transactionTo) {
+		TransactionEntity newEntity = toEntity(entity, transactionTo);
 		em.persist(newEntity);
 	}
-	
-	
+
 	@Override
-	public void updateOne(TransactionEntity entity,TransactionTo transactionTo) {
-		TransactionEntity newEntity = toEntity(entity,transactionTo);
+	public void updateOne(TransactionEntity entity, TransactionTo transactionTo) {
+		TransactionEntity newEntity = toEntity(entity, transactionTo);
 		em.merge(newEntity);
 	}
-	
-	
+
 	@Override
 	public void deleteOne(TransactionTo transactionTo) {
-		TransactionEntity entity =em.find(TransactionEntity.class, transactionTo.getId());
+		TransactionEntity entity = em.find(TransactionEntity.class, transactionTo.getId());
 		em.remove(entity);
 	}
 }

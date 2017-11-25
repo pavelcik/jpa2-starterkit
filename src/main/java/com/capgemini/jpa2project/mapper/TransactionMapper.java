@@ -3,13 +3,17 @@ package com.capgemini.jpa2project.mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.capgemini.jpa2project.dao.ClientEntityDao;
 import com.capgemini.jpa2project.dao.ProductListDao;
 import com.capgemini.jpa2project.domain.TransactionEntity;
 import com.capgemini.jpa2project.to.TransactionTo;
 @Component
 public class TransactionMapper {
 	
-
+	@Autowired
+	private ClientEntityDao dao;
+	@Autowired
+	private ProductListDao productListDao;
 
 	public TransactionTo map(TransactionEntity transactionEntity) {
 		TransactionTo transactionTo = null;
@@ -22,13 +26,15 @@ public class TransactionMapper {
 		return transactionTo;
 	}
 	
-	public TransactionEntity map(TransactionEntity trasactionEntity,TransactionTo transactionTo) {
+	public TransactionEntity map(TransactionEntity transactionEntity,TransactionTo transactionTo) {
 		
-		if(trasactionEntity !=null) {
+		if(transactionEntity !=null&&transactionEntity.getId()!=null) {
 
-			trasactionEntity.setOrderDate(transactionTo.getOrderDate());
-			trasactionEntity.setStatus(transactionTo.getStatus());
-			return trasactionEntity;
+			transactionEntity.setOrderDate(transactionTo.getOrderDate());
+			transactionEntity.setStatus(transactionTo.getStatus());
+			transactionEntity.setClient(dao.findAllForTransactionId(transactionEntity.getId()));
+			transactionEntity.setProductList(productListDao.findAllForTransactionId(transactionEntity.getId()));
+			return transactionEntity;
 	}
 		else {
 			TransactionEntity transactionEntity2 = new TransactionEntity();

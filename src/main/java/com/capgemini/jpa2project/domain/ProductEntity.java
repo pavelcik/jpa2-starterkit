@@ -26,7 +26,7 @@ public class ProductEntity extends AbstractEntity {
 	private BigDecimal margin;
 	
 	
-	@OneToMany(cascade=CascadeType.REMOVE,orphanRemoval=true)
+	@OneToMany(cascade=CascadeType.REMOVE)
 	@JoinColumn(name="product_id")
 	private List<ProductListEntity> orderedProducts;
 
