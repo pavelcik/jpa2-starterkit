@@ -9,11 +9,18 @@ import com.capgemini.jpa2project.domain.ProductEntity;
 
 public interface JPaQueryDao {
 
-	public BigDecimal calculateTransaction(Long id);
-	public List<String> uniqueShoppingListByClient(Long id);
+	BigDecimal calculateTransaction(Long id);
+
+	List<String> uniqueShoppingListByClient(Long id);
+
 	List<ProductEntity> tenBestsellingProducts();
-	public List<ClientEntity> moneySpentByClient(Date from,Date to);
+
+	List<ClientEntity> moneySpentByClient(Date from, Date to);
+
 	List<ProductEntity> productsInRealisation();
-	
-	
+
+	BigDecimal profitInMonth(Date from, Date to);
+
+	List<ClientEntity> clientsWithProcessingStatus();
+
 }

@@ -62,11 +62,6 @@ public class JpaQueryDaoImpl implements JPaQueryDao {
 	@Override
 	public List<ClientEntity> moneySpentByClient(Date from, Date to) {
 		JPAQuery<ClientEntity> query = new JPAQuery<>(em);
-//		List<ClientEntity> result = query.select(transactionEntity.client).from(transactionEntity,productListEntity)
-//				.where(transactionEntity.orderDate.between(from, to))
-//				.groupBy(transactionEntity.client)
-//				.orderBy(productListEntity.product.unitPrice.multiply(productListEntity.numberOfItems).desc()).limit(3L)
-//				.fetch();
 		List<ClientEntity> result2 = query.select(productListEntity.transaction.client).from(productListEntity)
 				.where(productListEntity.transaction.orderDate.between(from, to))
 				.groupBy(productListEntity.transaction.client)
@@ -74,12 +69,32 @@ public class JpaQueryDaoImpl implements JPaQueryDao {
 				.fetch();
 		return result2;
 	}
+
 	@Override
 	public List<ProductEntity> productsInRealisation() {
 		JPAQuery<ProductEntity> query = new JPAQuery<>(em);
 		List<ProductEntity> result = query.select(productListEntity.product).from(productListEntity)
-				.where(productListEntity.transaction.status.eq(OrderStatus.PROCESSING))
-						.fetch();
+				.where(productListEntity.transaction.status.eq(OrderStatus.PROCESSING)).fetch();
 		return result;
 	}
+
+	@Override
+	public BigDecimal profitInMonth(Date from, Date to) {
+		JPAQuery<ProductEntity> query = new JPAQuery<>(em);
+		List<BigDecimal> profitInMonthList = query
+				.select((productListEntity.product.unitPrice).multiply(productListEntity.numberOfItems)
+						.multiply(productListEntity.product.margin.divide(100)))
+				.from(productListEntity).where(productListEntity.transaction.orderDate.between(from, to)).fetch();
+		BigDecimal result = profitInMonthList.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
+		return result;
+
 	}
+
+	@Override
+	public List<ClientEntity> clientsWithProcessingStatus() {
+		JPAQuery<ClientEntity> query = new JPAQuery<>(em);
+		List<ClientEntity> clientsWithProcessingStatus = query.select(transactionEntity.client).from(transactionEntity)
+				.where(transactionEntity.status.eq(OrderStatus.PROCESSING)).distinct().fetch();
+		return clientsWithProcessingStatus;
+	}
+}

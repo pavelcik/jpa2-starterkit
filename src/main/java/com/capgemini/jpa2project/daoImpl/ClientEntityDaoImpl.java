@@ -16,28 +16,29 @@ import com.querydsl.jpa.impl.JPAQuery;
 @Repository
 public class ClientEntityDaoImpl implements ClientEntityDao {
 
-	
 	@PersistenceContext
 	private EntityManager em;
-	
+
 	@Override
 	public ClientEntity findOne(Long id) {
 		return em.find(ClientEntity.class, id);
 	}
+
 	@Override
 	public void createOne(ProductTo productTo) {
 		em.persist(productTo);
 	}
-	
+
 	@Override
 	public void updateOne(ProductTo productTo) {
 		em.merge(productTo);
 	}
-	
+
 	@Override
 	public void deleteOne(ProductTo productTo) {
 		em.remove(productTo);
 	}
+
 	@Override
 	public List<ClientEntity> findAll() {
 		QClientEntity clientEntity = QClientEntity.clientEntity;
@@ -45,6 +46,5 @@ public class ClientEntityDaoImpl implements ClientEntityDao {
 		List<ClientEntity> result = query.select(clientEntity).from(clientEntity).fetch();
 		return result;
 	}
-	
-	
+
 }

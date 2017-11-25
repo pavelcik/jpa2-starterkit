@@ -24,10 +24,11 @@ import com.capgemini.jpa2project.exceptions.ExceptionMessages;
 import com.capgemini.jpa2project.mapper.TransactionMapper;
 import com.capgemini.jpa2project.service.TransactionService;
 import com.capgemini.jpa2project.to.TransactionTo;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @TestPropertySource(properties = { "spring.profiles.active=mysql", "spring.datasource.username=root",
-"spring.datasource.password=Qwerty123" })
+		"spring.datasource.password=Qwerty123" })
 @Transactional
 public class TransactionServiceTest {
 
@@ -36,28 +37,23 @@ public class TransactionServiceTest {
 
 	@Autowired
 	private TransactionMapper mapper;
-	
-	
-	
-	
+
 	@Rule
 	public ExpectedException expectedEx = ExpectedException.none();
-	
-	
 
 	@Test
 	public void shouldCheckIfMapperWorks() throws BusinessException {
-		// given		
+		// given
 		LocalDate localOrderdate = LocalDate.of(2012, 10, 9);
 		Date dateFrom = Date.valueOf(localOrderdate);
 		TransactionTo transactionTo = TransactionTo.builder().orderDate(dateFrom).status(OrderStatus.IN_ORDER).build();
 		TransactionEntity entity = service.findOne(20L);
 		// when
 		TransactionEntity mappedEntity = mapper.map(entity, transactionTo);
-		assertEquals(mappedEntity.getId(),entity.getId());
-		assertEquals(mappedEntity.getOrderDate(),transactionTo.getOrderDate());
-		assertEquals(mappedEntity.getStatus(),transactionTo.getStatus());
-		
+		assertEquals(mappedEntity.getId(), entity.getId());
+		assertEquals(mappedEntity.getOrderDate(), transactionTo.getOrderDate());
+		assertEquals(mappedEntity.getStatus(), transactionTo.getStatus());
+
 	}
 
 	@Test
@@ -66,12 +62,12 @@ public class TransactionServiceTest {
 		TransactionEntity entity = service.findOne(20L);
 		// when
 		TransactionTo transactionTo = mapper.map(entity);
-		assertEquals(transactionTo.getId(),entity.getId());
+		assertEquals(transactionTo.getId(), entity.getId());
 		assertEquals(transactionTo.getClient(), entity.getClient());
-		assertEquals(transactionTo.getOrderDate(),entity.getOrderDate());
-		assertEquals(transactionTo.getProductList(),entity.getProductList());
+		assertEquals(transactionTo.getOrderDate(), entity.getOrderDate());
+		assertEquals(transactionTo.getProductList(), entity.getProductList());
 		assertEquals(transactionTo.getStatus(), entity.getStatus());
-		assertEquals(transactionTo.getVersion(),entity.getVersion());
+		assertEquals(transactionTo.getVersion(), entity.getVersion());
 	}
 
 	@Test
@@ -120,12 +116,13 @@ public class TransactionServiceTest {
 	@Test
 	public void shouldCreateNewProductListAndAddItToDatabase() throws BusinessException {
 		// given
-		
+
 		Long id = 101L;
 		TransactionEntity entity = new TransactionEntity();
 		LocalDate localOrderdate = LocalDate.of(2012, 10, 9);
 		Date orderDate = Date.valueOf(localOrderdate);
-		TransactionTo transactionTo = TransactionTo.builder().orderDate(orderDate).status(OrderStatus.PROCESSED).build();
+		TransactionTo transactionTo = TransactionTo.builder().orderDate(orderDate).status(OrderStatus.PROCESSED)
+				.build();
 		// when
 		service.createOne(entity, transactionTo);
 		int productListSize = service.findAll().size();
@@ -145,7 +142,7 @@ public class TransactionServiceTest {
 		// then
 		service.createOne(entity, transactionTo);
 	}
-	
+
 	@Test
 	public void shouldUpdateProductList() throws BusinessException {
 		// given
@@ -153,23 +150,25 @@ public class TransactionServiceTest {
 		TransactionEntity entity = service.findOne(entityId);
 		LocalDate localOrderdate = LocalDate.of(2012, 10, 9);
 		Date orderDate = Date.valueOf(localOrderdate);
-		TransactionTo transactionTo = TransactionTo.builder().orderDate(orderDate).status(OrderStatus.PROCESSED).build();
+		TransactionTo transactionTo = TransactionTo.builder().orderDate(orderDate).status(OrderStatus.PROCESSED)
+				.build();
 		// when
 		service.updateOne(entity, transactionTo);
 		// then
 		assertEquals(entityId, entity.getId());
-		
+
 	}
-	
+
 	@Test
 	public void shouldCheckIfUpdateUpdatesProductListAndNotAddsNew() throws BusinessException {
 		// given
-		
+
 		Long entityId = 36L;
 		TransactionEntity entity = service.findOne(entityId);
 		LocalDate localOrderdate = LocalDate.of(2012, 10, 9);
 		Date orderDate = Date.valueOf(localOrderdate);
-		TransactionTo transactionTo = TransactionTo.builder().orderDate(orderDate).status(OrderStatus.PROCESSED).build();
+		TransactionTo transactionTo = TransactionTo.builder().orderDate(orderDate).status(OrderStatus.PROCESSED)
+				.build();
 		// when
 		service.updateOne(entity, transactionTo);
 		int transactionListSize = service.findAll().size();
@@ -186,13 +185,13 @@ public class TransactionServiceTest {
 		expectedEx.expect(BusinessException.class);
 		expectedEx.expectMessage(ExceptionMessages.OBJECT_NOT_FOUND);
 		TransactionEntity entity = service.findOne(entityId);
-		TransactionTo transactionTo = TransactionTo.builder().orderDate(orderDate).status(OrderStatus.PROCESSED).build();
+		TransactionTo transactionTo = TransactionTo.builder().orderDate(orderDate).status(OrderStatus.PROCESSED)
+				.build();
 		// when
 		service.updateOne(entity, transactionTo);
-		
 
 	}
-	
+
 	@Test
 	public void shouldDeleteProductList() throws BusinessException {
 		// given
@@ -202,9 +201,9 @@ public class TransactionServiceTest {
 		service.deleteOne(to);
 		int newTransactionListSize = service.findAll().size();
 		// then
-		assertEquals(transactionListSize-1, newTransactionListSize);
+		assertEquals(transactionListSize - 1, newTransactionListSize);
 	}
-	
+
 	@Test
 	public void shouldNotDeleteProductList() throws BusinessException {
 		// given
@@ -214,10 +213,10 @@ public class TransactionServiceTest {
 		expectedEx.expect(BusinessException.class);
 		expectedEx.expectMessage(ExceptionMessages.ID_NOT_VALID);
 		service.deleteOne(to);
-		
+
 		int newTransactionListSize = service.findAll().size();
 		// then
-		assertEquals(transactionListSize-1, newTransactionListSize);
+		assertEquals(transactionListSize - 1, newTransactionListSize);
 	}
-	
+
 }
